@@ -1,8 +1,9 @@
-export const registerUser = (username, password) => {
+export const registerUser = (username, password, email) => {
 	return{
 		type: 'REGISTER_USER',
 		username,
-		password
+		password,
+		email
 	};
 };
 
