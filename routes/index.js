@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var mongoose = require('mongoose');
+
 var User = mongoose.model('User');
+var Player = mongoose.model('squad');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -41,6 +44,14 @@ router.post('/login', function(req, res, next){
       return res.status(401).json(info);
     }
   })(req, res, next);
+});
+
+router.get('/squad', function(req, res, next) {
+  Player.find({}, function(err, posts){
+    if(err){return next(err);}
+    console.log(posts);
+    res.json(posts);
+  })
 });
 
 module.exports = router;

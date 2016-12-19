@@ -1,50 +1,51 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { signInUser } from '../Actions/AuthActions'
+import { getSquadsFetchData } from '../Actions/FetchSquadActions'
 import Login from './Login';
 import Signup from './Signup';
 import { addPlayerToTeam, removePlayerFromTeam } from '../Actions/TeamActions'
 const sampleData = 
     [
         {
-            playerName: "Virat Kohli",
+            Fullname: "Virat Kohli",
             cost: 1200000,
-            pid: 1
+            pId: 1
         },
         {
-            playerName: "R. Ashwin",
+            Fullname: "R. Ashwin",
             cost: 900000,
-            pid: 2
+            pId: 2
         },
         {
-            playerName: "B. Kumar",
+            Fullname: "B. Kumar",
             cost: 800000,
-            pid: 3
+            pId: 3
         },
         {
-            playerName: "S. Tendulkar",
+            Fullname: "S. Tendulkar",
             cost: 1100000,
-            pid: 4
+            pId: 4
         },
         {
-            playerName: "V. Sehwag",
+            Fullname: "V. Sehwag",
             cost: 1100000,
-            pid: 5
+            pId: 5
         },
         {
-            playerName: "R. Ponting",
+            Fullname: "R. Ponting",
             cost: 1000000,
-            pid: 6
+            pId: 6
         },
         {
-            playerName: "Joe Root",
+            Fullname: "Joe Root",
             cost: 1100000,
-            pid: 7
+            pId: 7
         },
         {
-            playerName: "J. Kallis",
+            Fullname: "J. Kallis",
             cost: 900000,
-            pid: 8
+            pId: 8
         },
     ];
 
@@ -57,14 +58,14 @@ const TeamList = (props) => {
             <ul>
                 {props.list.map((playerObj) => {
                     return (
-                        <li key={playerObj.pid}>
+                        <li key={playerObj.pId}>
                             <a href="#" onClick={() => props.onClick(playerObj)}>
-                                {playerObj.playerName}
+                                {playerObj.Fullname}
                             </a>
                         </li>
                     );
                 })}
-                {props.list.length == 0 ? <li>No players here...</li> : undefined}
+                {props.list.length == 0 ? <li>No players here...</li> : ''}
             </ul>
         </div>
         )
@@ -72,17 +73,25 @@ const TeamList = (props) => {
 
 
 class TeamSelector extends Component {
+    componentDidMount(){
+        this.props.fetchSquad();
+    }
     render() {
-        let filteredList = sampleData.filter((playerObj) => {
+        if(this.props.fetchSquadState.isLoading === true){
+            return <div>Fetching data, hold on tight...</div>;
+
+        }
+        if(this.props.fetchSquadState.hasErrored === true || this.props.fetchSquadState.squad.length === 0){
+            return <div>Fetch data failed. Sorry :( </div>
+        }
+        //debugger;
+        let filteredList = this.props.fetchSquadState.squad.filter((playerObj) => {
             for (var i = this.props.teamList.length - 1; i >= 0; i--) {
-                if(this.props.teamList[i].pid === playerObj.pid) 
+                if(this.props.teamList[i].pId === playerObj.pId) 
                     return false;
             }
             return true;
         })
-
-        console.log(filteredList);
-        console.log(this.props.teamList);
 
         return(
             <div>
@@ -103,7 +112,8 @@ class TeamSelector extends Component {
 
 const mapStateToLinkProps = (state) => {
     return {
-        teamList: state.Team
+        teamList: state.Team,
+        fetchSquadState: state.FetchSquad
     };
 };
 
@@ -114,6 +124,9 @@ const mapDispatchToLinkProps = (dispatch) => {
          },
          removePlayer: (playerObj) => {
             dispatch(removePlayerFromTeam(playerObj));
+         },
+         fetchSquad: () => {
+            dispatch(getSquadsFetchData());
          }
      };
  };

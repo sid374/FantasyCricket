@@ -7,15 +7,12 @@ const defaultState = [{
 const Team = (state = [], action) => {
 	switch(action.type){
 		case 'ADD_PLAYER':
-			console.log("Team Reducer adding player to team!" + action.player);
 			return [
 				...state,
 				action.player];
 		case 'REMOVE_PLAYER':
-			console.log("Team Reducer removing player from team!");
-			return state.filter((playerObj) => {return playerObj.pid != action.player.pid})
+			return state.filter((playerObj) => {return playerObj.pId != action.player.pId})
 		default:
-			console.log("Team Reducer returning default team");
 			return state;
 	}
 }
