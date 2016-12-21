@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var mongoose = require('mongoose');
-
 var User = mongoose.model('User');
 var Player = mongoose.model('squad');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -24,7 +24,6 @@ router.post('/register', function(req, res, next){
 
   user.save(function (err){
     if(err){ return next(err); }
-
     return res.json({token: user.generateJWT()})
   });
 });
@@ -49,7 +48,6 @@ router.post('/login', function(req, res, next){
 router.get('/squad', function(req, res, next) {
   Player.find({}, function(err, posts){
     if(err){return next(err);}
-    console.log(posts);
     res.json(posts);
   })
 });

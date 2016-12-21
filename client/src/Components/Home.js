@@ -12,7 +12,7 @@ class Home extends Component {
                 <h1>
                     Welcome to Sid's Fantasy Cricket!
                 </h1>
-               <TeamSelector/>
+               <Signup />
             </div>
         );
     }
