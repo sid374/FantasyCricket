@@ -25,6 +25,19 @@ export const loginUserReturnToDefaults = () =>{
 	}
 }
 
+export const logout = () => {
+	return {
+			type: 'LOGOUT_USER'
+		};
+}
+
+export const logoutUser = () => {
+	return (dispatch) => {
+		localStorage.removeItem('cricJwt');
+		dispatch(logout());
+	};
+}
+
 export function loginUser(username, password) {
     return (dispatch) => {
         dispatch(loginUserInProgress(true));
@@ -44,7 +57,12 @@ export function loginUser(username, password) {
                 }
                 return response;
             })
-            .then((response) => dispatch(loginUserSuccess(true)))
+            .then((response) => response.json())
+            .then((jsonResponse) =>  {
+            	localStorage.setItem('cricJwt', jsonResponse.token)
+            	console.log(localStorage['cricJwt']);
+            })
+            .then(() => dispatch(loginUserSuccess(true)))
             .then(() =>  dispatch(loginUserFailed(false)))
             .then(() =>  dispatch(loginUserInProgress(false)))
             .catch(() => {

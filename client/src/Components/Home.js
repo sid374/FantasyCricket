@@ -10,6 +10,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 class Home extends Component {
     render() {
+        console.log("Rendering home");
         return(
             <div>
                 <Navbar />

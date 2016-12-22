@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavItem, Button } from 'react-bootstrap';
+import LogoutButton from './LogoutButton';
+
 //import '../stylesheets/bootstrap.min.css';
 
 class NavigationBar extends Component {
@@ -10,11 +12,11 @@ class NavigationBar extends Component {
           		<Navbar.Brand>
           			Googly
           		</Navbar.Brand>
-         	</Navbar.Header>
-
-      		<Nav pullRight>
-     		   </Nav>
-      	</Navbar>
+          </Navbar.Header>
+          <NavItem>
+            <LogoutButton />
+          </ NavItem>
+      </Navbar>
     );
   }
 }
