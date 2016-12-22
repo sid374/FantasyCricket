@@ -2,6 +2,8 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import UserLogin from './UserLogin'
 import RegisterUser from './RegisterUser'
+import LoginUser from './LoginUser'
+
 import Team from './Team'
 import FetchSquad from './FetchSquad'
 import createLogger from 'redux-logger';
@@ -13,7 +15,8 @@ const rootReducer = combineReducers({
 	UserLogin,
 	Team,
 	FetchSquad,
-	RegisterUser
+	RegisterUser,
+	LoginUser
 });
 
 export default createStore(

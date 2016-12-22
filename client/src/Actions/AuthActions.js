@@ -21,7 +21,7 @@ export const registerUserSuccess = (succeeded) => {
 
 export const registerUserReturnToDefaults = () =>{
 	return{
-		type: 'REGISTER_USER_RETURN_TO_DEFAULT'
+		type: 'REGISTER_USER_RETURN_TO_DEFAULT',
 	}
 }
 

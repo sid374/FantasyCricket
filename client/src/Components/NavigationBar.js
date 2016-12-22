@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavItem, Button } from 'react-bootstrap';
+//import '../stylesheets/bootstrap.min.css';
 
 class NavigationBar extends Component {
   render() {
@@ -7,13 +8,12 @@ class NavigationBar extends Component {
     	<Navbar>
         	<Navbar.Header>
           		<Navbar.Brand>
-          			Fantasy Cricket
+          			Googly
           		</Navbar.Brand>
          	</Navbar.Header>
 
       		<Nav pullRight>
-        		<Button bsStyle="success">Login</Button>
-     		</Nav>
+     		   </Nav>
       	</Navbar>
     );
   }
