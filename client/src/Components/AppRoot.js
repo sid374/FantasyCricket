@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import NavigationBar from './NavigationBar';
 import Dashboard from './Dashboard';
 import Home from './Home';
 import Store from '../Store'
@@ -13,7 +12,7 @@ const enterHomePage = () => {
 
 const requireAuth = (nextState, replace) => {
   console.log("On enter dashboard");
-  if(Store.getState().LoginUser.success == true)
+  if(Store.getState().LoginUser.success === true)
     console.log("User logged in, we can access dashboard!");
   else{
       console.log("Failed login going back to homepage");
@@ -26,7 +25,7 @@ class AppRoot extends Component {
     return (
     <MuiThemeProvider>
       <Provider store={Store}>
-          <Router history = {browserHistory}>
+          <Router history={browserHistory}>
                 <Route path="/" component={Home} onEnter={enterHomePage}/>
                 <Route path="/dashboard" component={Dashboard} onEnter={requireAuth}/>
           </Router>

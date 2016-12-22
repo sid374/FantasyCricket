@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { signInUser } from '../Actions/AuthActions'
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import { loginUser } from '../Actions/LoginActions'
@@ -22,9 +21,9 @@ class Login extends Component {
         }
     render() {
         let resultMessage = ""
-        if(this.props.loginUserErrored == true)
+        if(this.props.loginUserErrored === true)
             resultMessage = "Login Failed, Please try again";
-        else if(this.props.loginUserSuccess == true){
+        else if(this.props.loginUserSuccess === true){
             resultMessage = "Login successful!"
             browserHistory.push('/dashboard')
         }
@@ -43,7 +42,7 @@ class Login extends Component {
 }
 
 
-const mapStateToLinkProps = (state) => {
+const mapStateToProps = (state) => {
     return {
         loginUserSuccess: state.LoginUser.success,
         loginUserErrored: state.LoginUser.hasErrored,
@@ -51,7 +50,7 @@ const mapStateToLinkProps = (state) => {
     };
 };
 
-const mapDispatchToLinkProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
      return{
          logInClick: (user, pw) => {
             dispatch(loginUser(user, pw));
@@ -59,7 +58,7 @@ const mapDispatchToLinkProps = (dispatch) => {
      };
  };
  
-export default connect(mapStateToLinkProps, mapDispatchToLinkProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
  
 

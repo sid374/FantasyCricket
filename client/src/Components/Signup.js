@@ -87,21 +87,21 @@ class SignupForm extends Component{
     }
 
     render(){
-        let validationSucceeded = false;
-        if(this.state.Password.length !== 0 && this.state.Email.length !==0 && this.state.Username.length != 0 &&
+        let validationSucceeded=false;
+        if(this.state.Password.length !== 0 && this.state.Email.length !==0 && this.state.Username.length !== 0 &&
             this.state.PasswordError.length ===  0 && this.state.EmailError.length === 0 && this.state.UsernameError.length === 0)
-            validationSucceeded = true;
+            validationSucceeded=true;
 
-        const customContentStyle = {
+        const customContentStyle={
             width: '300px'
         };
 
-        const clearStateAndClose = () => {
+        const clearStateAndClose=() => {
             this.clearState();
             this.props.handleClose();
         }
 
-        const formActions = [
+        const formActions=[
           <FlatButton
             label="Cancel"
             primary={true}
@@ -122,32 +122,32 @@ class SignupForm extends Component{
             <div>
                 <Dialog
                     title="Sign Up"
-                    actions =  {formActions}
-                    modal = {true}
-                    open = {this.props.open}
-                    contentStyle = {customContentStyle}
+                    actions={formActions}
+                    modal={true}
+                    open={this.props.open}
+                    contentStyle={customContentStyle}
                     autoScrollBodyContent={true}>
                     <TextField onChange={this.usernameUpdate} 
                           floatingLabelText="Username"
                           value={this.state.Username}
-                          errorText = {this.state.UsernameError}
+                          errorText={this.state.UsernameError}
                         /><br />
                     <TextField onChange={this.emailUpdate} 
                           floatingLabelText="Email"
                           value={this.state.Email}
-                          errorText = {this.state.EmailError}
+                          errorText={this.state.EmailError}
                         /><br />
                     <TextField onChange={this.passwordUpdate} 
                           floatingLabelText="Password"
                           value={this.state.Password}
                           type="password"
-                          errorText = {this.state.PasswordError}
+                          errorText={this.state.PasswordError}
                         /><br />
                     <TextField onChange={this.confirmPasswordUpdate} 
                           floatingLabelText="Confirm Password"
                           type="password"
                           value={this.state.ConfirmPassword}
-                          errorText = {this.state.ConfirmPasswordError}
+                          errorText={this.state.ConfirmPasswordError}
                         /><br />
                 </Dialog>
             </div>
@@ -173,14 +173,6 @@ class SignupButton extends Component{
 
     handleClose (){
         this.setState({open:false});
-    }
-
-    componentDidUpdate(prevProps, prevState){
-        if(this.props.registerUserSuccess && !prevProps.registerUserSuccess ||
-            this.props.registerUserErrored && !prevProps.registerUserErrored)
-        {
-
-        }
     }
 
     render(){

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
 import { logoutUser } from '../Actions/LoginActions'
-import { browserHistory } from 'react-router'
 
 /*
     Simple login form with username and password field. 
@@ -18,6 +17,7 @@ class LogoutButton extends Component {
         return(
             <div>
                 <FlatButton label="Logout" 
+                backgroundColor="red"
                 onTouchTap={this.props.logout}/>
             </div>
         );

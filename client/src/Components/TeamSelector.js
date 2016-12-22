@@ -1,53 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { signInUser } from '../Actions/AuthActions'
 import { getSquadsFetchData } from '../Actions/FetchSquadActions'
-import Login from './Login';
-import Signup from './Signup';
 import { addPlayerToTeam, removePlayerFromTeam } from '../Actions/TeamActions'
-const sampleData = 
-    [
-        {
-            Fullname: "Virat Kohli",
-            cost: 1200000,
-            pId: 1
-        },
-        {
-            Fullname: "R. Ashwin",
-            cost: 900000,
-            pId: 2
-        },
-        {
-            Fullname: "B. Kumar",
-            cost: 800000,
-            pId: 3
-        },
-        {
-            Fullname: "S. Tendulkar",
-            cost: 1100000,
-            pId: 4
-        },
-        {
-            Fullname: "V. Sehwag",
-            cost: 1100000,
-            pId: 5
-        },
-        {
-            Fullname: "R. Ponting",
-            cost: 1000000,
-            pId: 6
-        },
-        {
-            Fullname: "Joe Root",
-            cost: 1100000,
-            pId: 7
-        },
-        {
-            Fullname: "J. Kallis",
-            cost: 900000,
-            pId: 8
-        },
-    ];
 
 const TeamList = (props) => {
     return (
@@ -65,7 +19,7 @@ const TeamList = (props) => {
                         </li>
                     );
                 })}
-                {props.list.length == 0 ? <li>No players here...</li> : ''}
+                {props.list.length === 0 ? <li>No players here...</li> : ''}
             </ul>
         </div>
         )
@@ -98,8 +52,8 @@ class TeamSelector extends Component {
                 <h3>
                     Team Slector
                 </h3>
-                <TeamList listName = "All Available Players" list={filteredList} onClick={this.props.addPlayer}/>
-                <TeamList listName = "My team" list={this.props.teamList} onClick={this.props.removePlayer}/>
+                <TeamList listName="All Available Players" list={filteredList} onClick={this.props.addPlayer}/>
+                <TeamList listName="My team" list={this.props.teamList} onClick={this.props.removePlayer}/>
                 <div style={{clear: 'both'}}>
                     <button style={{margin: '10px'}}>
                             Submit Team
