@@ -8,18 +8,12 @@ import Navbar from './NavigationBar';
 import TeamSelector from './TeamSelector';
 import RaisedButton from 'material-ui/RaisedButton';
 
-class Home extends Component {
+class Dashboard extends Component {
     render() {
         return(
             <div>
-                <Navbar />
                 <h1>
-                    Welcome to Sid's Fantasy Cricket! 
-                    {this.props.route.message}
-                    <div>
-                        <div style={{display: 'inline-block'}}><Login /></div>
-                        <div style={{display: 'inline-block'}}><Signup /></div>
-                    </div>
+                    You are logged in!
                 </h1>
             </div>
         );
@@ -28,7 +22,7 @@ class Home extends Component {
  
 <Signup />
 
-export default Home;
+export default Dashboard;
 
 
 

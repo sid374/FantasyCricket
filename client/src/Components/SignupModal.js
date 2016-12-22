@@ -168,10 +168,12 @@ class SignupButton extends Component{
     }
 
     handleOpen() {
+        debugger;
         this.setState({open:true});
     }
 
     handleClose (){
+        debugger;
         this.setState({open:false});
     }
 
