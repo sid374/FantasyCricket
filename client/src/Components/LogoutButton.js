@@ -24,7 +24,7 @@ class LogoutButton extends Component {
     }
 }
 
-const mapStateToLinkProps = (state) => {
+const mapStateToProps = (state) => {
     return {
         loginUserSuccess: state.LoginUser.success,
         loginUserErrored: state.LoginUser.hasErrored,
@@ -32,7 +32,7 @@ const mapStateToLinkProps = (state) => {
     };
 };
 
-const mapDispatchToLinkProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
      return{
          logout: (user, pw) => {
             dispatch(logoutUser());
@@ -41,7 +41,7 @@ const mapDispatchToLinkProps = (dispatch) => {
  };
  
  
-export default connect(mapStateToLinkProps, mapDispatchToLinkProps)(LogoutButton);
+export default connect(mapStateToProps, mapDispatchToProps)(LogoutButton);
 
  
 

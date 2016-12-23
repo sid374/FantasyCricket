@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Navbar from './NavigationBar';
-import { browserHistory } from 'react-router'
+import SelectSeries from './SelectSeries';
+import { browserHistory } from 'react-router';
 
 
 class Dashboard extends Component {
@@ -15,9 +16,7 @@ class Dashboard extends Component {
         return(
             <div>
             	<Navbar />
-                <h1>
-                    You are logged in!
-                </h1>
+                <SelectSeries / >
             </div>
         );
     }

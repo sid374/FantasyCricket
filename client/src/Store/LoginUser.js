@@ -53,9 +53,14 @@ const success = (state = false, action) => {
     }
 }
 
+const token = (state = null, action) => {
+    return localStorage.getItem('cricJwt');
+}
+
 
 export default combineReducers({
     success,
     inProgress,
-    hasErrored
+    hasErrored,
+    token
 });

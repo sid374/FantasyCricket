@@ -64,14 +64,14 @@ class TeamSelector extends Component {
     }
 }
 
-const mapStateToLinkProps = (state) => {
+const mapStateToProps = (state) => {
     return {
         teamList: state.Team,
         fetchSquadState: state.FetchSquad
     };
 };
 
-const mapDispatchToLinkProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
      return{
          addPlayer: (playerObj) => {
             dispatch(addPlayerToTeam(playerObj));
@@ -85,7 +85,7 @@ const mapDispatchToLinkProps = (dispatch) => {
      };
  };
  
-export default connect(mapStateToLinkProps, mapDispatchToLinkProps)(TeamSelector);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamSelector);
  
 
 

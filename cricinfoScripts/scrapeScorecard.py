@@ -241,6 +241,7 @@ def insertSquad(seriesId, squadArray):
     client = MongoClient()
     db = client.cric
     for player in squadArray:
+        print player
         try:
             result = db.squad.insert_one(player)
         except pymongoErrors.DuplicateKeyError, e:

@@ -18,6 +18,7 @@ class Login extends Component {
     handleSubmit(e){
             e.preventDefault();
             this.props.logInClick(e.target[0].value, e.target[1].value);
+            e.target[1].value = "";
         }
     render() {
         let resultMessage = ""
@@ -35,7 +36,7 @@ class Login extends Component {
                                 type="password"/><br/>
                     <FlatButton label="Log in" type="submit"/>
                 </form>
-                {resultMessage}
+                <div style={{color:'red'}}>{resultMessage}</div>
             </div>
         );
     }

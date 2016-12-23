@@ -205,7 +205,7 @@ class SignupButton extends Component{
     }
 }
 
-const mapStateToLinkProps = (state) => {
+const mapStateToProps = (state) => {
     return {
         registerUserSuccess: state.RegisterUser.success,
         registerUserErrored: state.RegisterUser.hasErrored,
@@ -213,7 +213,7 @@ const mapStateToLinkProps = (state) => {
     };
 };
 
-const mapDispatchToLinkProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
      return{
          signUpClick: (user, pw, email) => {
             dispatch(registerUser(user, pw, email));
@@ -221,7 +221,7 @@ const mapDispatchToLinkProps = (dispatch) => {
      };
  };
  
-export default connect(mapStateToLinkProps, mapDispatchToLinkProps)(SignupButton);
+export default connect(mapStateToProps, mapDispatchToProps)(SignupButton);
 
 
 

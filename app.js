@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/cric');
 require('./models/Player');
 require('./models/Users');
+require('./models/Series');
 require('./config/passport');
 
 var index = require('./routes/index');
