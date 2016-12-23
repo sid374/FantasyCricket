@@ -28,7 +28,7 @@ const TeamList = (props) => {
 
 class TeamSelector extends Component {
     componentDidMount(){
-        this.props.fetchSquad();
+        this.props.fetchSquad('/squad/'+this.props.params.seriesId);
     }
     render() {
         if(this.props.fetchSquadState.isLoading === true){
@@ -50,7 +50,7 @@ class TeamSelector extends Component {
         return(
             <div>
                 <h3>
-                    Team Slector
+                    Team Selector
                 </h3>
                 <TeamList listName="All Available Players" list={filteredList} onClick={this.props.addPlayer}/>
                 <TeamList listName="My team" list={this.props.teamList} onClick={this.props.removePlayer}/>
@@ -79,8 +79,8 @@ const mapDispatchToProps = (dispatch) => {
          removePlayer: (playerObj) => {
             dispatch(removePlayerFromTeam(playerObj));
          },
-         fetchSquad: () => {
-            dispatch(getSquadsFetchData());
+         fetchSquad: (url) => {
+            dispatch(getSquadsFetchData(url));
          }
      };
  };

@@ -53,6 +53,13 @@ router.get('/squad', function(req, res, next) {
   })
 });
 
+router.get('/squad/:seriesId', function(req, res, next) {
+  Player.find({seriesId:req.params.seriesId}, function(err, players){
+    if(err){return next(err);}
+    res.json(players);
+  })
+});
+
 router.get('/series', auth, function(req, res, next) {
   Series.find({}, function(err, series){
     if(err){return next(err);}

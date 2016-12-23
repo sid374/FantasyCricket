@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Dashboard from './Dashboard';
 import Home from './Home';
+import TeamSelector from './TeamSelector';
 import Store from '../Store'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Provider } from 'react-redux';
@@ -27,7 +28,9 @@ class AppRoot extends Component {
       <Provider store={Store}>
           <Router history={browserHistory}>
                 <Route path="/" component={Home} onEnter={enterHomePage}/>
-                <Route path="/dashboard" component={Dashboard} onEnter={requireAuth}/>
+                <Route path="/dashboard" component={Dashboard} onEnter={requireAuth}>
+                  <Route path='/teamSelector/:seriesId' component={TeamSelector}/>
+                </Route> 
           </Router>
       </Provider>
     </MuiThemeProvider>

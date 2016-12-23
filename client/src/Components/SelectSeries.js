@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getSquadsFetchData } from '../Actions/FetchSquadActions'
 import { addPlayerToTeam, removePlayerFromTeam } from '../Actions/TeamActions'
 import Spinner from 'react-spinkit'
+import { Link } from 'react-router'
 
 
 const SeriesList = (props) => {
@@ -12,9 +13,9 @@ const SeriesList = (props) => {
                 {props.list.map((seriesObj) => {
                     return (
                         <li key={seriesObj.seriesId}>
-                            <a href="#" onClick={() => props.onClick(seriesObj)}>
+                            <Link to={"teamSelector/"+seriesObj.seriesId}>
                                 {seriesObj.Name}
-                            </a>
+                            </Link>
                         </li>
                     );
                 })}

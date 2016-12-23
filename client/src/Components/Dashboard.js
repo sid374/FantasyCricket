@@ -16,7 +16,8 @@ class Dashboard extends Component {
         return(
             <div>
             	<Navbar />
-                <SelectSeries / >
+                <SelectSeries />
+                {this.props.children}
             </div>
         );
     }
