@@ -1,21 +1,22 @@
-export function getSquadsErrored(bool) {
-    console.log("Error occured");
+export function getSquadsErrored(bool, e) {
+    if(bool == true)
+        console.log(e);
     return {
-        type: 'ITEMS_HAS_ERRORED',
+        type: 'GETSQUAD_HAS_ERRORED',
         hasErrored: bool
     };
 }
 
 export function getSquadsIsLoading(bool) {
     return {
-        type: 'ITEMS_IS_LOADING',
+        type: 'GETSQUAD_IS_LOADING',
         isLoading: bool
     };
 }
 
 export function getSquadsFetchDataSuccess(items) {
     return {
-        type: 'ITEMS_FETCH_DATA_SUCCESS',
+        type: 'GETSQUAD_FETCH_DATA_SUCCESS',
         items
     };
 }
@@ -28,12 +29,13 @@ export function getSquadsFetchData(url = '/squad') {
                 if (!response.ok) {
                     throw Error(response.statusText);
                 }
-
                 return response;
             })
             .then((response) => response.json())
             .then((items) =>  dispatch(getSquadsFetchDataSuccess(items)))
             .then(() =>  dispatch(getSquadsIsLoading(false)))
-            .catch(() => dispatch(getSquadsErrored(true)));
+            .catch((e) => {
+                dispatch(getSquadsErrored(true, e))
+            });
     };
 }

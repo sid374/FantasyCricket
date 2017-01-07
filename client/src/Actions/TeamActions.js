@@ -1,13 +1,15 @@
-export const addPlayerToTeam = (player) => {
+export const addPlayerToTeam = (player, seriesId) => {
 	return{
 		type: 'ADD_PLAYER',
-		player
+		player,
+		seriesId
 	};
 };
 
-export const removePlayerFromTeam = (player) => {
+export const removePlayerFromTeam = (player, seriesId) => {
 	return{
 		type: 'REMOVE_PLAYER',
-		player
+		player,
+		seriesId
 	};
 }

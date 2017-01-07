@@ -13,7 +13,7 @@ const SeriesList = (props) => {
                 {props.list.map((seriesObj) => {
                     return (
                         <li key={seriesObj.seriesId}>
-                            <Link to={"teamSelector/"+seriesObj.seriesId}>
+                            <Link activeStyle={{ color: 'red' }} to={"/teamSelector/"+seriesObj.seriesId}>
                                 {seriesObj.Name}
                             </Link>
                         </li>

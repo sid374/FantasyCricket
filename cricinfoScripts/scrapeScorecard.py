@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from pymongo import MongoClient, ASCENDING, DESCENDING, errors as pymongoErrors
 from datetime import datetime
 import itertools
-
+import threading
 CRICINFO_URL = "http://www.espncricinfo.com"
 PLAYER_INFO_URL = CRICINFO_URL+"/America/content/player/"
 SERIES_URL = CRICINFO_URL+"/America/content/series/"
@@ -150,32 +150,41 @@ def getPlayerInfo(pid, seriesId):
     '''Given a pid, fetches all data about a player by querying cricinfo'''
     print "Fetching Player:"+pid
     playerURL = PLAYER_INFO_URL + str(pid) + '.html'
-    response = urllib2.urlopen(playerURL)
-    html = response.read()
-    soup = BeautifulSoup(html, 'html.parser')
-    playerDict = {"pId":pid}
-    for info in soup.find_all(class_ = "ciPlayerinformationtxt"):
-        for relevantInfo in info.find("b"):
-            if(relevantInfo == "Major teams"):
-                playerDict[relevantInfo.replace(' ',  '')] = [team.string.replace(',','') for team in relevantInfo.parent.next_sibling.find_next_siblings()]
-            else:
-                playerDict[relevantInfo.replace(' ',  '')] = relevantInfo.parent.next_sibling.next_element.string #+ ":" + relevantInfo.next_sibling()
-    playerDict["Name"] = soup.find(class_ = "ciPlayernametxt").h1.text.strip()
-    playerDict["seriesId"] = seriesId
-    return playerDict
+    try:
+        response = urllib2.urlopen(playerURL)
+        html = response.read()
+    except urllib2.HTTPError, e:
+        print e
+        return None
+    else:
+        soup = BeautifulSoup(html, 'html.parser')
+        playerDict = {"pId":pid}
+        for info in soup.find_all(class_ = "ciPlayerinformationtxt"):
+            for relevantInfo in info.find("b"):
+                if(relevantInfo == "Major teams"):
+                    playerDict[relevantInfo.replace(' ',  '')] = [team.string.replace(',','') for team in relevantInfo.parent.next_sibling.find_next_siblings()]
+                else:
+                    playerDict[relevantInfo.replace(' ',  '')] = relevantInfo.parent.next_sibling.next_element.string #+ ":" + relevantInfo.next_sibling()
+        playerDict["Name"] = soup.find(class_ = "ciPlayernametxt").h1.text.strip()
+        playerDict["seriesId"] = seriesId
+        return playerDict
 
-def getSquad(url, seriesId):
+def getSquad(url, seriesId, teamName = ""):
     '''Given a squad cricinfo url, returns a lists of playerinfos
        example url:http://www.espncricinfo.com/india-v-england-2016-17/content/squad/1064399.html'''
     print "Analyzing Squad:"+url
+    print teamName
     response = urllib2.urlopen(url)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
-    squads = [getIdFromURL(player.get('href')) for player in soup.find_all("a", {"href" : re.compile("content/player/[0-9]+.html")})]
-    uniqueSquads = list(set(squads))
+    playerIds = [getIdFromURL(player.get('href')) for player in soup.find_all("a", {"href" : re.compile("content/player/[0-9]+.html")})]
+    uniquePlayerIds = list(set(playerIds))
     fullSquad = []
-    for pid in uniqueSquads:
-        fullSquad.append(getPlayerInfo(pid, seriesId))
+    for pid in uniquePlayerIds:
+        player = getPlayerInfo(pid, seriesId)
+        player["currentTeam"] = teamName #add currentTeam for easy retrieval later
+        player["Cost"] = 800000 # TODO: change this 
+        fullSquad.append(player)
     return fullSquad
 
 def bValidPlayer(seriesId, playerId):
@@ -222,10 +231,14 @@ def setupSeries(url):
 
 def setupSquads(squadsUrl, seriesId):
     '''Gets squad urls from series squad page, and then processes the urls by calling getSquad and insertSquad'''
+    '''/big-bash-league-2016-17/content/squad/index.html'''
     response = urllib2.urlopen(CRICINFO_URL+squadsUrl)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
-    squads = [getSquad(CRICINFO_URL+squad.get('href'), seriesId) for squad in soup.find_all("a", {"href" : re.compile("content/squad/[0-9]+.html")})]
+    squads = []
+    for squad in soup.find_all("a", {"href" : re.compile("content/squad/[0-9]+.html")}):
+        #print squad.text
+        squads.append(getSquad(CRICINFO_URL+squad.get('href'), seriesId, squad.text))
     if len(squads) < 2:
         print "Error. Squads not updated correctly. Please manually add squads."
     sqauds = list(itertools.chain(*squads))
@@ -247,6 +260,14 @@ def insertSquad(seriesId, squadArray):
         except pymongoErrors.DuplicateKeyError, e:
             print e
 
+def insertSinglePlayer(player):
+    client = MongoClient()
+    db = client.cric
+    print player['pId']
+    try:
+        result = db.allPlayers.insert_one(player)
+    except pymongoErrors.DuplicateKeyError, e:
+        print e
 
 def mongoInsertNewSeriesFromSeriesId(sId):
     sUrl = SERIES_URL+str(sId)+".html"
@@ -258,6 +279,7 @@ def setupDB():
     db.series.ensure_index("seriesId", unique=True)
     db.squad.ensure_index([("seriesId", 1) , ("pId", 1)], unique=True)
     db.scores.ensure_index([("seriesId", 1) , ("pId", 1), ("matchId", 1)], unique=True)
+    db.allPlayers.ensure_index([("seriesId", 1) , ("pId", 1)], unique=True)
 
 def setupSeriesList(seriesList):
     for series in seriesList:
@@ -265,12 +287,96 @@ def setupSeriesList(seriesList):
 
 def driver():
     setupDB()
-    setupSeriesList(["http://www.espncricinfo.com/tri-nation-zimbabwe-2016-17/content/series/1059705.html",
+    setupSeriesList(["http://www.espncricinfo.com/big-bash-league-2016-17/content/series/1023537.html",
+         "http://www.espncricinfo.com/australia-v-pakistan-2016-17/content/series/1000871.html",
          "http://www.espncricinfo.com/india-v-england-2016-17/content/series/1030195.html",
-         "http://www.espncricinfo.com/australia-v-south-africa-2016-17/content/series/1000805.html",
          ])
 
+#pid is an int
+def getAndInsertPlayer(pId):
+    player = getPlayerInfo(str(pId),'-1');
+    if player is not None:
+        insertSinglePlayer(player)
+
+
+
+class myThread (threading.Thread):
+    def __init__(self, threadID, pId):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.pId = pId
+    def run(self):
+        getAndInsertPlayer(self.pId)
+
+    def getAndInsertPlayer(pId):
+        player = this.getPlayerInfo(str(pId),'-1');
+        if player is not None:
+            this.insertSinglePlayer(player)
+
+    def getPlayerInfo(self, pid, seriesId):
+        '''Given a pid, fetches all data about a player by querying cricinfo'''
+        print "Fetching Player:"+pid
+        playerURL = PLAYER_INFO_URL + str(pid) + '.html'
+        try:
+            response = urllib2.urlopen(playerURL)
+            html = response.read()
+        except urllib2.HTTPError, e:
+            print e + 'for pid' + str(pid) + '====================================='
+            return None
+        else:
+            soup = BeautifulSoup(html, 'html.parser')
+            playerDict = {"pId":pid}
+            for info in soup.find_all(class_ = "ciPlayerinformationtxt"):
+                for relevantInfo in info.find("b"):
+                    if(relevantInfo == "Major teams"):
+                        playerDict[relevantInfo.replace(' ',  '')] = [team.string.replace(',','') for team in relevantInfo.parent.next_sibling.find_next_siblings()]
+                    else:
+                        playerDict[relevantInfo.replace(' ',  '')] = relevantInfo.parent.next_sibling.next_element.string #+ ":" + relevantInfo.next_sibling()
+            playerDict["Name"] = soup.find(class_ = "ciPlayernametxt").h1.text.strip()
+            playerDict["seriesId"] = seriesId
+            return playerDict
+
+    def insertSinglePlayer(self, player):
+        print 'inserting player ' + player['pId'] + "============================================================"
+        client = MongoClient()
+        db = client.cric
+        print player['pId']
+        try:
+            result = db.allPlayers.insert_one(player)
+        except pymongoErrors.DuplicateKeyError, e:
+            print e
+
+
+def getAllPlayers():
+    #4000-6131 done
+    #6131,56219
+    step = 15
+    threads = []
+    i = 262758
+    while i < 2538020:
+        print 'Getting' + str(step) + 'more!!'
+        for sub in range(i,i+step):
+            currThread = myThread(sub,sub)
+            currThread.start()
+            threads.append(currThread)
+        for t in threads:
+            print 'joining thread'
+            t.join(15)
+            if t.isAlive():
+                print 'Timed ut----~~~~~~~~~~~~~~~~~~~~~~~~~'
+        threads = []
+        i = i+step
+
+    print "exiting get all players"
+
+def setupSquadsTest():
+    setupSquads('/big-bash-league-2016-17/content/squad/index.html',1)
+
+    
 def main():
+    #setupSquadsTest()
+    # setupDB()
+    # getAllPlayers()
     driver();
     #getPlayerInfo('55412', '123')
 

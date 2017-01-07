@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 
 const hasErrored = (state = false, action) => {
     switch (action.type) {
-        case 'ITEMS_HAS_ERRORED':
+        case 'GETSQUAD_HAS_ERRORED':
             return action.hasErrored;
 
         default:
@@ -13,7 +13,7 @@ const hasErrored = (state = false, action) => {
 
 const isLoading = (state = true, action) => {
     switch (action.type) {
-        case 'ITEMS_IS_LOADING':
+        case 'GETSQUAD_IS_LOADING':
             return action.isLoading;
 
         default:
@@ -23,7 +23,7 @@ const isLoading = (state = true, action) => {
 
 const squad = (state = [], action) => {
     switch (action.type) {
-        case 'ITEMS_FETCH_DATA_SUCCESS':
+        case 'GETSQUAD_FETCH_DATA_SUCCESS':
             return action.items;
         default:
             return state;
