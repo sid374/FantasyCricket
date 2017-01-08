@@ -43,26 +43,10 @@ const TeamTable = (props) => {
         </div>
         )
 }
-const TeamList = (props) => {
-    return (
-        <div style={{float: 'left', margin: '10px'}}>
-            <h4>
-                {props.listName}
-            </h4>
-            <ul>
-                {props.list.map((playerObj) => {
-                    return (
-                        <li key={playerObj.pId}>
-                            <a href="#" onClick={() => props.onClick(playerObj)}>
-                                {playerObj.Name}
-                            </a>
-                        </li>
-                    );
-                })}
-                {props.list.length === 0 ? <li>No players here...</li> : ''}
-            </ul>
-        </div>
-        )
+
+TeamTable.propTypes = {
+    listName: React.PropTypes.string.isRequired,
+    list: React.PropTypes.array.isRequired
 }
 
 

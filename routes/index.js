@@ -74,10 +74,13 @@ router.get('/series', auth, function(req, res, next) {
 
 router.get('/userSquad/:seriesId', auth, function(req, res, next) {
     console.log(req.payload);
-    User.find({}, function(err, series){
-        if(err){return next(err);}
-        res.json(series);
-    })
+    User.findOne({_id: req.payload._id, "currentSquads.seriesId": req.params.seriesId}, {'currentSquads.$':1})
+        .populate('currentSquads.squad')
+        .exec(function(err, doc){
+            if(err){return next(err);}
+            console.log(doc.currentSquads[0].squad);
+            return res.json(doc.currentSquads[0].squad);
+        });
 });
 
 router.post('/userSquad/:seriesId', auth, function(req, res, next) {

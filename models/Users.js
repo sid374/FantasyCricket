@@ -7,7 +7,7 @@ var UserSchema = new mongoose.Schema({
   email: {type:String, unique: true},
   hash: String,
   salt: String,
-  currentSquads: [{seriesId: String, squad: [mongoose.Schema.Types.ObjectId]}]
+  currentSquads: [{seriesId: String, squad: [{type: mongoose.Schema.Types.ObjectId, ref: 'squad'}]}]
 });
 
 UserSchema.methods.setPassword = function(password){
