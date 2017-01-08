@@ -1,0 +1,2 @@
+* Get users current squad for server.
+* validation for submitting squad
