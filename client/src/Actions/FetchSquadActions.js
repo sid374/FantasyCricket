@@ -21,10 +21,13 @@ export function getSquadsFetchDataSuccess(items) {
     };
 }
 
-export function getSquadsFetchData(url = '/squad') {
+export function getSquadsFetchData(url = '/squad', userToken) {
     return (dispatch) => {
         dispatch(getSquadsIsLoading(true));
-        fetch(url)
+
+        let authHeader = new Headers();
+        authHeader.append("Authorization", "Bearer "+ userToken);
+        fetch(url, {headers:authHeader})
             .then((response) => {
                 if (!response.ok) {
                     throw Error(response.statusText);

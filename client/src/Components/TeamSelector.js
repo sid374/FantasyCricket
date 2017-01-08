@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getSquadsFetchData } from '../Actions/FetchSquadActions'
 import { addPlayerToTeam, removePlayerFromTeam } from '../Actions/TeamActions'
+import { submitTeam } from '../Actions/UserActions'
 import Spinner from 'react-spinkit'
 import { Table } from 'react-bootstrap';
 
@@ -67,12 +68,12 @@ const TeamList = (props) => {
 
 class TeamSelector extends Component {
     componentDidMount(){
-        this.props.fetchSquad('/squad/'+this.props.params.seriesId);
+        this.props.fetchSquad('/squad/'+this.props.params.seriesId, this.props.userToken);
     }
 
     componentWillReceiveProps(nextProps){
         if(this.props.params.seriesId != nextProps.params.seriesId){
-            this.props.fetchSquad('/squad/'+nextProps.params.seriesId);
+            this.props.fetchSquad('/squad/'+nextProps.params.seriesId, this.props.userToken);
         }
     }
 
@@ -96,23 +97,38 @@ class TeamSelector extends Component {
         //remove the players that have been already selected from the teamlist.
         let filteredList = this.props.fetchSquadState.squad.filter((playerObj) => {
             for (var i = userTeamList.length - 1; i >= 0; i--) {
-                console.log(i);
                 if(userTeamList[i].pId === playerObj.pId) 
                     return false;
             }
             return true;
         })
 
+        //verification step before our add player action is dispatched.
+        //TODO: add more team verification here.
+        const verifyAddPlayer = (playerObj, seriesId) =>{
+            if(userTeamList.length >= 11){
+                //Reflect this in the UI somehow
+                console.log("Error: more than 11 players already added");
+            }
+            else{
+                this.props.addPlayer(playerObj, seriesId);
+            }
+        }
         
+        const submitTeamClicked = (event) => {
+            console.log(event);
+            this.props.submitTeam(userTeamList, this.props.params.seriesId, this.props.userToken);
+        }
+
         return(
             <div>
                 <h3>
                     Team Selector
                 </h3>
-                <TeamTable listName="All Available Players" list={filteredList} onClick={this.props.addPlayer} seriesId={this.props.params.seriesId}/>
+                <TeamTable listName="All Available Players" list={filteredList} onClick={verifyAddPlayer} seriesId={this.props.params.seriesId}/>
                 <TeamTable listName="My team" list={userTeamList} onClick={this.props.removePlayer} seriesId={this.props.params.seriesId}/>
                 <div style={{clear: 'both'}}>
-                    <button style={{margin: '10px'}}>
+                    <button style={{margin: '10px'}} onClick = {submitTeamClicked}>
                             Submit Team
                     </button>
                 </div>
@@ -124,7 +140,8 @@ class TeamSelector extends Component {
 const mapStateToProps = (state) => {
     return {
         teamList: state.Team,
-        fetchSquadState: state.FetchSquad
+        fetchSquadState: state.FetchSquad,
+        userToken: state.LoginUser.token
     };
 };
 
@@ -136,13 +153,15 @@ const mapDispatchToProps = (dispatch) => {
          removePlayer: (playerObj, seriesId) => {
             dispatch(removePlayerFromTeam(playerObj, seriesId));
          },
-         fetchSquad: (url) => {
-            dispatch(getSquadsFetchData(url));
+         fetchSquad: (url, userToken) => {
+            dispatch(getSquadsFetchData(url, userToken));
+         },
+         submitTeam: (squad, seriesId, userToken) => {
+            dispatch(submitTeam(seriesId, squad, userToken));
          }
      };
  };
  
 export default connect(mapStateToProps, mapDispatchToProps)(TeamSelector);
- 
 
 

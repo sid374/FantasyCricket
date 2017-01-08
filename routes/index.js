@@ -11,60 +11,112 @@ var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+    res.render('index', { title: 'Express' });
 });
 
 router.post('/register', function(req, res, next){
-  if(!req.body.username || !req.body.password || req.body.email){
-    return res.status(400).json({message: 'Please fill out all fields'});
-  }
+    console.log(req.body.username);
+    console.log(req.body.password);
+    console.log(req.body.email);
 
-  var user = new User();
-  user.username = req.body.username;
-  user.email = req.body.email;
-  user.setPassword(req.body.password);
+    if(!req.body.username || !req.body.password || !req.body.email){
+        console.log("Please fill all fields");
+        return res.status(400).json({message: 'Please fill out all fields'});
+    }
 
-  user.save(function (err){
-    if(err){ return next(err); }
-    return res.json({token: user.generateJWT()})
-  });
+    var user = new User();
+    user.username = req.body.username;
+    user.email = req.body.email;
+    user.setPassword(req.body.password);
+    user.currentSquads = [];
+    user.save(function (err){
+        if(err){ console.log("User already existed"); return next(err); }
+        return res.json({token: user.generateJWT()})
+    });
 });
 
 
 router.post('/login', function(req, res, next){
-  if(!req.body.username || !req.body.password){
-    return res.status(400).json({message: 'Please fill out all fields'});
-  }
-  passport.authenticate('local', function(err, user, info){
-    if(err){ return next(err); }
-
-    if(user){
-      return res.json({token: user.generateJWT()});
-    } else {
-      return res.status(401).json(info);
+    if(!req.body.username || !req.body.password){
+        return res.status(400).json({message: 'Please fill out all fields'});
     }
-  })(req, res, next);
+    passport.authenticate('local', function(err, user, info){
+        if(err){ return next(err); }
+
+        if(user){
+            return res.json({token: user.generateJWT()});
+        } else {
+            return res.status(401).json(info);
+        }
+    })(req, res, next);
 });
 
-router.get('/squad', function(req, res, next) {
-  Player.find({}, function(err, players){
-    if(err){return next(err);}
-    res.json(players);
-  })
+router.get('/squad', auth, function(req, res, next) {
+    Player.find({}, function(err, players){
+        if(err){return next(err);}
+        res.json(players);
+    })
 });
 
-router.get('/squad/:seriesId', function(req, res, next) {
-  Player.find({seriesId:req.params.seriesId}, function(err, players){
-    if(err){return next(err);}
-    res.json(players);
-  })
+router.get('/squad/:seriesId', auth, function(req, res, next) {
+    Player.find({seriesId:req.params.seriesId}, function(err, players){
+        if(err){return next(err);}
+        res.json(players);
+    })
 });
 
 router.get('/series', auth, function(req, res, next) {
-  Series.find({}, function(err, series){
-    if(err){return next(err);}
-    res.json(series);
-  })
+    Series.find({}, function(err, series){
+        if(err){return next(err);}
+        res.json(series);
+    })
+});
+
+router.get('/userSquad/:seriesId', auth, function(req, res, next) {
+    console.log(req.payload);
+    User.find({}, function(err, series){
+        if(err){return next(err);}
+        res.json(series);
+    })
+});
+
+router.post('/userSquad/:seriesId', auth, function(req, res, next) {
+    if(!req.body.squad){
+        return res.status(400).json({message: 'please attach squad to body'});
+    }
+    console.log(req.payload);
+    let squadObjectIds = req.body.squad.map(function(objId){
+        console.log(objId);
+        return mongoose.Types.ObjectId(objId);
+    })
+    console.log(squadObjectIds);
+    let newSquad = {seriesId: req.params.seriesId, squad: squadObjectIds}
+    User.findOne({_id: req.payload._id}, function (err, doc){
+        if(err)
+            return next(err);
+        let existing = false;
+        let currentSquads = doc.get('currentSquads');
+        //check if seriesId already exists
+        for(i=0;i<currentSquads.length;i++){
+            if(currentSquads[i].seriesId == req.params.seriesId){
+                console.log("found existing squad");
+                currentSquads[i].squad = squadObjectIds;
+                console.log(currentSquads[i]);
+
+                existing = true;
+                break;
+            }
+        }
+        if(!existing){
+            currentSquads.push(newSquad);
+        }
+        doc.currentSquads = currentSquads;
+        doc.save(function(err){
+            if(err)
+                console.log(err)
+        });
+    });
+    return res.json({message: 'success'});
 });
 
 module.exports = router;

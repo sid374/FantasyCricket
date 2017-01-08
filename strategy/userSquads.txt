@@ -1,0 +1,3 @@
+Dealing with user squads:
+
+Have a currentSquad field in the user document in our db. This is the squad that user can manipulate using the ui. When we reach the deadline for a particular match, our scripts will automatically create a copy of this squad and store it in a different document. This simplifies user manipulation of squads, and keeps us in control.

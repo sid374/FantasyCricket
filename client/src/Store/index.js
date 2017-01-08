@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import UserLogin from './UserLogin'
 import RegisterUser from './RegisterUser'
 import LoginUser from './LoginUser'
+import User from './User'
 
 import Team from './Team'
 import FetchSquad from './FetchSquad'
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
 	Team,
 	FetchSquad,
 	RegisterUser,
-	LoginUser
+	LoginUser,
+	User
 });
 
 export default createStore(

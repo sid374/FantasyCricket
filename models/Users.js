@@ -6,7 +6,8 @@ var UserSchema = new mongoose.Schema({
   username: {type: String, lowercase: true, unique: true},
   email: {type:String, unique: true},
   hash: String,
-  salt: String
+  salt: String,
+  currentSquads: [{seriesId: String, squad: [mongoose.Schema.Types.ObjectId]}]
 });
 
 UserSchema.methods.setPassword = function(password){
@@ -23,10 +24,10 @@ UserSchema.methods.validPassword = function(password) {
 
 UserSchema.methods.generateJWT = function() {
 
-  // set expiration to 60 days
+  // set expiration to 1 days
   var today = new Date();
   var exp = new Date(today);
-  exp.setDate(today.getDate() + 60);
+  exp.setDate(today.getDate() + 1);
 
   return jwt.sign({
     _id: this._id,
