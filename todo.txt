@@ -1,4 +1,11 @@
-* Get users current squad for server. - DONE
+TODO NEXT
 * Submit squad button pressed - reflect in UI
+* Backend points calculations for players
+	- How to store points in db? (Points history by matches/cumulative points/user team points calculations)
+	- Scraping strategy
+	- Point rules!
 * validation for submitting squad
 * points for players
+
+COMPLETED
+* Get users current squad for server. - DONE
