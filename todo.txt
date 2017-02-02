@@ -1,2 +1,4 @@
-* Get users current squad for server.
+* Get users current squad for server. - DONE
+* Submit squad button pressed - reflect in UI
 * validation for submitting squad
+* points for players
