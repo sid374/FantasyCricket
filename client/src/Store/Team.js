@@ -16,6 +16,10 @@ const Team = (state = {}, action) => {
 		case 'REMOVE_PLAYER':
 			newState[action.seriesId] = newState[action.seriesId].filter((playerObj) => {return playerObj.pId !== action.player.pId})
 			return newState;
+		case 'GET_USER_TEAM_FETCH_DATA_SUCCESS':
+			if(action.items)
+				newState[action.seriesId] = action.items;
+			return newState;	
 		default:
 			return state;
 	}

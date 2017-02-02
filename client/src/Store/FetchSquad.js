@@ -30,7 +30,19 @@ const squad = (state = [], action) => {
     }
 }
 
+const userSquad = (state = {}, action) => {
+    let newState = {...state};
+    switch(action.type){
+        case 'GET_USER_SQUAD_FETCH_DATA_SUCCESS':
+            newState[action.seriesId] = action.items;
+            return newState;
+        default:
+            return state;
+    }
+}
+
 export default combineReducers({
+    userSquad,
     squad,
     isLoading,
     hasErrored

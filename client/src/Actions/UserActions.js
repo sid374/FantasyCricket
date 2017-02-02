@@ -15,7 +15,6 @@ export function submitTeamSuccess(bool) {
 }
 
 export function submitTeam(seriesId, squad, userToken) {
-	debugger;
 	let squadPids = squad.map(function(player){
 		return player['_id'];
 	})

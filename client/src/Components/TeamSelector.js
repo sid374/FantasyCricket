@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getSquadsFetchData } from '../Actions/FetchSquadActions'
+import { getSquadsFetchData, getSquadsErrored } from '../Actions/FetchSquadActions'
+import { getUserTeamsFetchData } from '../Actions/TeamActions'
 import { addPlayerToTeam, removePlayerFromTeam } from '../Actions/TeamActions'
 import { submitTeam } from '../Actions/UserActions'
 import Spinner from 'react-spinkit'
@@ -52,12 +53,19 @@ TeamTable.propTypes = {
 
 class TeamSelector extends Component {
     componentDidMount(){
+        this.props.clearErrors();
         this.props.fetchSquad('/squad/'+this.props.params.seriesId, this.props.userToken);
+        this.props.fetchUserTeam(this.props.params.seriesId, this.props.userToken);
+        //before that we need to think about how to store usersquad in the state tree. 
+        //keep it as 1 dictionary i guess
+
     }
 
     componentWillReceiveProps(nextProps){
+        this.props.clearErrors();
         if(this.props.params.seriesId != nextProps.params.seriesId){
             this.props.fetchSquad('/squad/'+nextProps.params.seriesId, this.props.userToken);
+            this.props.fetchUserTeam(nextProps.params.seriesId, this.props.userToken);
         }
     }
 
@@ -69,14 +77,10 @@ class TeamSelector extends Component {
         if(this.props.fetchSquadState.hasErrored === true || this.props.fetchSquadState.squad.length === 0){
             return <div>Fetch data failed. Sorry :( </div>
         }
-
-
         //TeamTable expects a list, so if we don't have any selected players right now, return an empty list
-        let userTeamList;
+        let userTeamList = [];
         if(this.props.params.seriesId in this.props.teamList)
             userTeamList = this.props.teamList[this.props.params.seriesId];
-        else
-            userTeamList = [];
 
         //remove the players that have been already selected from the teamlist.
         let filteredList = this.props.fetchSquadState.squad.filter((playerObj) => {
@@ -142,6 +146,12 @@ const mapDispatchToProps = (dispatch) => {
          },
          submitTeam: (squad, seriesId, userToken) => {
             dispatch(submitTeam(seriesId, squad, userToken));
+         },
+         fetchUserTeam: (seriesId, userToken) => {
+            dispatch(getUserTeamsFetchData(seriesId, userToken));
+         },
+         clearErrors: () => {
+            getSquadsErrored(false);
          }
      };
  };
